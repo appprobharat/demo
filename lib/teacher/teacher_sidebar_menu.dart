@@ -1,3 +1,7 @@
+// import 'package:demo_app/homework/holiday/list_holiday_homework.dart';
+// import 'package:demo_app/leave/list_leaveApproval.dart';
+import 'package:demo_app/teacher/geo_attendance_mark.dart';
+// import 'package:demo_app/teacher/roll_no.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +11,7 @@ import 'package:demo_app/login_page.dart';
 import 'package:demo_app/alert/stu_alert.dart';
 import 'package:demo_app/connect_teacher/teacher_chat_list.dart';
 import 'package:demo_app/payment/payment_teacher_screen.dart';
+
 import 'package:demo_app/school_info_page.dart';
 import 'package:demo_app/syllabus/syllabus.dart';
 import 'package:demo_app/teacher/AssignMarksPage.dart';
@@ -34,7 +39,9 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
   String teacherPhoto = '';
   String teacherClass = '';
   String teacherSection = '';
+  // String selectedSession = "2024-25";
 
+  // List<String> sessionList = ["2022-23", "2023-24", "2024-25"];
   @override
   void initState() {
     super.initState();
@@ -55,13 +62,11 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
 
   String getPhotoUrl(String photo) {
     if (photo.isEmpty) return '';
-    return photo.startsWith('http')
-        ? photo
-        : 'https://school.edusathi.in/$photo';
+    return photo.startsWith('http') ? photo : '${ApiService.Url}/$photo';
   }
 
   void _navigate(BuildContext context, Widget page) {
-    Navigator.pop(context); // ✅ close drawer
+    Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
   }
 
@@ -77,7 +82,7 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
     try {
       if (token.isNotEmpty) {
         await http.post(
-          Uri.parse('https://school.edusathi.in/api/logout'),
+          Uri.parse('${ApiService.Url}/api/logout'),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
@@ -107,7 +112,7 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
         children: [
           Container(
             color: AppColors.primary,
-            height: 130,
+            height: 110,
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
@@ -155,11 +160,23 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
             'Dashboard',
             () => _navigate(context, const TeacherDashboardScreen()),
           ),
+          sidebarItem(
+            context,
+            Icons.person,
+            'Mark Geo Attd.',
+            () => _navigate(context, const GeoAttendanceTeacher()),
+          ),
           // sidebarItem(
           //   context,
-          //   Icons.person,
-          //   'Admin',
-          //   () => _navigate(context, const AdminDashboardPage()),
+          //   Icons.format_list_numbered,
+          //   'Update Roll no',
+          //   () => _navigate(context, const UpdateRollNoPage()),
+          // ),
+          // sidebarItem(
+          //   context,
+          //   Icons.leave_bags_at_home_rounded,
+          //   'Approve Leave',
+          //   () => _navigate(context, const LeaveApprovalListPage()),
           // ),
           sidebarItem(
             context,
@@ -185,6 +202,12 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
             'Homeworks',
             () => _navigate(context, const TeacherHomeworkPage()),
           ),
+          // sidebarItem(
+          //   context,
+          //   Icons.collections_bookmark,
+          //   'Holiday-Homeworks',
+          //   () => _navigate(context, const ListHolidayHomework()),
+          // ),
           sidebarItem(
             context,
             Icons.add_alert,
@@ -298,9 +321,11 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
     VoidCallback onTap,
   ) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      visualDensity: const VisualDensity(vertical: -3),
+      leading: Icon(icon, size: 20),
+      title: Text(title, style: const TextStyle(fontSize: 13)),
+      dense: true,
+      visualDensity: const VisualDensity(vertical: -4),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       onTap: onTap,
     );
   }

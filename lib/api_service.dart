@@ -9,6 +9,7 @@ import 'login_page.dart';
 class ApiService {
   /// 🔥 CHANGE ONLY HERE
   static const String baseUrl = "https://cbfpublicschool.apppro.in/api";
+    static const String Url = "https://cbfpublicschool.apppro.in";
 
   /// ⏱ Timeout (iOS safe)
   static const Duration timeout = Duration(seconds: 20);
