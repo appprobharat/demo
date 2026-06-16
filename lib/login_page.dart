@@ -104,10 +104,22 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _errorMessage = "Request timeout. Please try again.";
       });
-    } catch (e) {
+    } catch (e, s) {
       debugPrint("❌ LOGIN ERROR: $e");
+      debugPrint("❌ STACKTRACE: $s");
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 10),
+          ),
+        );
+      }
+
       setState(() {
-        _errorMessage = "Something went wrong";
+        _errorMessage = e.toString();
       });
     } finally {
       // 6️⃣ Loader stop (always)
