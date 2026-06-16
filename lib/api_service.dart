@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,7 +10,7 @@ import 'login_page.dart';
 class ApiService {
   /// 🔥 CHANGE ONLY HERE
   static const String baseUrl = "https://cbfpublicschool.apppro.in/api";
-    static const String Url = "https://cbfpublicschool.apppro.in";
+  static const String Url = "https://cbfpublicschool.apppro.in";
 
   /// ⏱ Timeout (iOS safe)
   static const Duration timeout = Duration(seconds: 20);
@@ -49,6 +50,10 @@ class ApiService {
     );
   }
 
+  static Future<Map<String, String>> multipartHeaders() async {
+    final token = await _getToken();
+    return {'Authorization': 'Bearer $token', 'Accept': 'application/json'};
+  }
   // ================= HEADERS =================
 
   static Future<Map<String, String>> _headers() async {
@@ -80,6 +85,59 @@ class ApiService {
       return response;
     } on TimeoutException {
       debugPrint("⏱ API TIMEOUT: $endpoint");
+      return null;
+    }
+  }
+
+  static Future<http.StreamedResponse?> multipartPost(
+    BuildContext context,
+    String endpoint, {
+    Map<String, String>? fields,
+    File? file,
+    String fileKey = 'Attachment',
+  }) async {
+    final token = await _getToken();
+
+    if (token.isEmpty) {
+      await forceLogout(context);
+      return null;
+    }
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse("$baseUrl$endpoint"),
+      );
+
+      request.headers.addAll(await multipartHeaders());
+
+      // ✅ FIELDS
+      if (fields != null) {
+        request.fields.addAll(fields);
+      }
+
+      // ✅ FILE
+      if (file != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(fileKey, file.path),
+        );
+      }
+
+      final response = await request.send();
+
+      if (response.statusCode == 401) {
+        await forceLogout(context);
+        return null;
+      }
+
+      return response;
+    } on TimeoutException {
+      debugPrint("⏱ API TIMEOUT: $endpoint");
+
+      return null;
+    } catch (e) {
+      debugPrint("❌ MULTIPART ERROR => $e");
+
       return null;
     }
   }

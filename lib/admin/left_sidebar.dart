@@ -1,26 +1,27 @@
 import 'dart:convert';
+import 'package:cbf/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:demo_app/Exam/exam_schedule.dart';
+import 'package:cbf/Exam/exam_schedule.dart';
 
-import 'package:demo_app/alert/stu_alert.dart';
-import 'package:demo_app/connect_teacher/teacher_chat_list.dart';
-import 'package:demo_app/login_page.dart';
-import 'package:demo_app/payment/payment_teacher_screen.dart';
-import 'package:demo_app/school_info_page.dart';
-import 'package:demo_app/syllabus/syllabus.dart';
-import 'package:demo_app/teacher/AssignMarksPage.dart';
-import 'package:demo_app/teacher/AssignSkillsPage.dart';
-import 'package:demo_app/teacher/ResultcardPage.dart';
-import 'package:demo_app/Attendance_UI/mark_attendance_page.dart';
-import 'package:demo_app/teacher/complaint_teacher/teacher_complaint_list_page.dart';
-import 'package:demo_app/Attendance_UI/teacher_attendance_screen.dart';
-import 'package:demo_app/teacher/teacher_dashboard_screen.dart';
-import 'package:demo_app/teacher/teacher_homework_page.dart';
-import 'package:demo_app/teacher/teacher_profile_page.dart';
-import 'package:demo_app/Attendance_UI/attendance_screen.dart';
-import 'package:demo_app/teacher/teacher_timetable.dart';
+import 'package:cbf/alert/stu_alert.dart';
+import 'package:cbf/connect_teacher/teacher_chat_list.dart';
+import 'package:cbf/login_page.dart';
+import 'package:cbf/payment/payment_teacher_screen.dart';
+import 'package:cbf/school_info_page.dart';
+import 'package:cbf/syllabus/syllabus.dart';
+import 'package:cbf/teacher/AssignMarksPage.dart';
+import 'package:cbf/teacher/AssignSkillsPage.dart';
+import 'package:cbf/teacher/ResultcardPage.dart';
+import 'package:cbf/Attendance_UI/mark_attendance_page.dart';
+import 'package:cbf/teacher/complaint_teacher/teacher_complaint_list_page.dart';
+import 'package:cbf/Attendance_UI/teacher_attendance_screen.dart';
+import 'package:cbf/teacher/teacher_dashboard_screen.dart';
+import 'package:cbf/teacher/teacher_homework_page.dart';
+import 'package:cbf/teacher/teacher_profile_page.dart';
+import 'package:cbf/Attendance_UI/attendance_screen.dart';
+import 'package:cbf/teacher/teacher_timetable.dart';
 
 class TeacherSidebarMenu extends StatefulWidget {
   const TeacherSidebarMenu({super.key});
@@ -39,6 +40,7 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
   void initState() {
     super.initState();
     loadTeacherInfo();
+   
   }
 
   Future<void> loadTeacherInfo() async {
@@ -68,7 +70,7 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
                       ? NetworkImage(
                           teacherPhoto.startsWith('http')
                               ? teacherPhoto
-                              : 'https://school.edusathi.in/$teacherPhoto',
+                              : '${ApiService.Url}/$teacherPhoto',
                         )
                       : const AssetImage('assets/images/logo.png')
                             as ImageProvider,
@@ -113,12 +115,6 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
               MaterialPageRoute(builder: (_) => const TeacherDashboardScreen()),
             );
           }),
-          // sidebarItem(context, Icons.person, 'Admin', () {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (_) => const AdminDashboardPage()),
-          //   );
-          // }),
           sidebarItem(context, Icons.person, 'Profile', () {
             Navigator.push(
               context,
@@ -260,7 +256,7 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
                         final token = prefs.getString('token') ?? '';
 
                         final response = await http.post(
-                          Uri.parse('https://school.edusathi.in/api/logout'),
+                          Uri.parse('${ApiService.Url}/api/logout'),
                           headers: {
                             'Authorization': 'Bearer $token',
                             'Accept': 'application/json',
