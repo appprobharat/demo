@@ -49,20 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCFfW05jPp0ZAJe1BXtvfvTQK3jMaz4-sM',
-    appId: '1:601637703800:ios:c81eda17d6f05f23999d8d',
-    messagingSenderId: '601637703800',
-    projectId: 'demoapp-d771f',
-    storageBucket: 'demoapp-d771f.firebasestorage.app',
-    iosBundleId: 'com.example.demovishal',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyBvh6U8xZW1DzwxbhKVudR8XNsF7YkGLG8',
+    appId: '1:820733942677:android:78a0d5452bd0162aaa749c',
+    messagingSenderId: '820733942677',
+    projectId: 'sd-school-39034',
+    storageBucket: 'sd-school-39034.firebasestorage.app',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAKdb9_83Qahm_vqQ5DwB1hqUxqowqUGRE',
-    appId: '1:601637703800:android:947333cf5878de2d999d8d',
-    messagingSenderId: '601637703800',
-    projectId: 'demoapp-d771f',
-    storageBucket: 'demoapp-d771f.firebasestorage.app',
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBRdZFtonsFsIzxl10pVfmNF5mwSOEYc1Y',
+    appId: '1:820733942677:ios:eb2e8484486a076caa749c',
+    messagingSenderId: '820733942677',
+    projectId: 'sd-school-39034',
+    storageBucket: 'sd-school-39034.firebasestorage.app',
+    iosBundleId: 'com.sdschooleducation.apppro',
   );
 }

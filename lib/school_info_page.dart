@@ -74,10 +74,9 @@ class _SchoolInfoPageState extends State<SchoolInfoPage> {
 
     try {
       setState(() => isDownloading = true);
-
       final normalizedUrl = qrCode.startsWith('http')
           ? qrCode
-          : 'https://school.edusathi.in/$qrCode';
+          : '${ApiService.Url}/$qrCode';
 
       final response = await http.get(Uri.parse(normalizedUrl));
       if (response.statusCode != 200 || response.bodyBytes.isEmpty) {
@@ -126,7 +125,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage> {
       return const AssetImage("assets/images/logo.png");
     }
     return NetworkImage(
-      url.startsWith('http') ? url : 'https://school.edusathi.in/$url',
+      url.startsWith('http') ? url : '${ApiService.Url}/$url',
     );
   }
 

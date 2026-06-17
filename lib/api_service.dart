@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -8,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart';
 
 class ApiService {
-  /// 🔥 CHANGE ONLY HERE
+ /// 🔥 CHANGE ONLY HERE
   static const String baseUrl = "https://cbfpublicschool.apppro.in/api";
   static const String Url = "https://cbfpublicschool.apppro.in";
 
@@ -17,10 +16,8 @@ class ApiService {
 
   /// 🔐 Secure storage (iOS + Android)
   static final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.unlocked),
   );
-
   // ================= TOKEN =================
 
   static Future<String> _getToken() async {
@@ -32,6 +29,15 @@ class ApiService {
     }
 
     return prefs.getString('auth_token') ?? '';
+  }
+
+  static Future<Map<String, String>> multipartHeaders() async {
+    final token = await _getToken();
+    return {'Authorization': 'Bearer $token', 'Accept': 'application/json'};
+  }
+
+  static Future<Map<String, String>> headers() async {
+    return await _headers();
   }
 
   // ================= LOGOUT =================
@@ -50,10 +56,6 @@ class ApiService {
     );
   }
 
-  static Future<Map<String, String>> multipartHeaders() async {
-    final token = await _getToken();
-    return {'Authorization': 'Bearer $token', 'Accept': 'application/json'};
-  }
   // ================= HEADERS =================
 
   static Future<Map<String, String>> _headers() async {
@@ -85,59 +87,6 @@ class ApiService {
       return response;
     } on TimeoutException {
       debugPrint("⏱ API TIMEOUT: $endpoint");
-      return null;
-    }
-  }
-
-  static Future<http.StreamedResponse?> multipartPost(
-    BuildContext context,
-    String endpoint, {
-    Map<String, String>? fields,
-    File? file,
-    String fileKey = 'Attachment',
-  }) async {
-    final token = await _getToken();
-
-    if (token.isEmpty) {
-      await forceLogout(context);
-      return null;
-    }
-
-    try {
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse("$baseUrl$endpoint"),
-      );
-
-      request.headers.addAll(await multipartHeaders());
-
-      // ✅ FIELDS
-      if (fields != null) {
-        request.fields.addAll(fields);
-      }
-
-      // ✅ FILE
-      if (file != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath(fileKey, file.path),
-        );
-      }
-
-      final response = await request.send();
-
-      if (response.statusCode == 401) {
-        await forceLogout(context);
-        return null;
-      }
-
-      return response;
-    } on TimeoutException {
-      debugPrint("⏱ API TIMEOUT: $endpoint");
-
-      return null;
-    } catch (e) {
-      debugPrint("❌ MULTIPART ERROR => $e");
-
       return null;
     }
   }
@@ -253,20 +202,10 @@ class ApiService {
   // ================= ATTACHMENTS =================
   static const siblingUrl =
       'https://cbfpublicschool.apppro.in/uploads/no_image.png';
-  static const String s3Base =
-      "https://s3.ap-south-1.amazonaws.com/cbfpublicschool.apppro.in";
-
-  static String attachmentUrl(String schoolId, String folder, String file) {
-    return "$s3Base/documents/$schoolId/$folder/$file";
-  }
-
-  static String homeworkAttachment(String fileName) {
-    return "$s3Base/homeworks/$fileName";
-  }
 }
 
 class AppColors {
-  static const primary = Colors.blue;
+  static const primary = Colors.indigo;
   static const success = Colors.green;
   static const danger = Colors.red;
   static const info = Colors.blue;
@@ -277,11 +216,12 @@ class AppAssets {
   static const defaultAvatar = 'assets/images/default_avatar.png';
   static const logo = 'assets/images/logo.png';
   static const logo_new = 'assets/images/logo_new.png';
+  static const loginBackground = 'assets/images/login.png';
 
   static const schoolName = "Demo Public School";
   static const schoolDescription =
       "Empowering Education, Simplifying Management.";
 
-  static const websiteName = "www.cbfpublicschool.in";
+ static const websiteName = "www.cbfpublicschool.in";
   static const companyWebsite = "https://cbfpublicschool.in";
 }

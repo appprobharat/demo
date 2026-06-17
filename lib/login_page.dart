@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:demo_app/admin/admin_dashboard.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,6 @@ class _LoginPageState extends State<LoginPage> {
       debugPrint("🟢 LOGIN RESPONSE: $data");
 
       // 4️⃣ Success
-
       if (data['status'] == true) {
         await ApiService.saveSession(data);
 
@@ -108,22 +108,10 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _errorMessage = "Request timeout. Please try again.";
       });
-    } catch (e, s) {
+    } catch (e) {
       debugPrint("❌ LOGIN ERROR: $e");
-      debugPrint("❌ STACKTRACE: $s");
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 10),
-          ),
-        );
-      }
-
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = "Something went wrong";
       });
     } finally {
       // 6️⃣ Loader stop (always)

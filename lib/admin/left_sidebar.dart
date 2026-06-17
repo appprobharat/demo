@@ -1,27 +1,27 @@
 import 'dart:convert';
-import 'package:cbf/api_service.dart';
+import 'package:demo_app/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cbf/Exam/exam_schedule.dart';
+import 'package:demo_app/Exam/exam_schedule.dart';
 
-import 'package:cbf/alert/stu_alert.dart';
-import 'package:cbf/connect_teacher/teacher_chat_list.dart';
-import 'package:cbf/login_page.dart';
-import 'package:cbf/payment/payment_teacher_screen.dart';
-import 'package:cbf/school_info_page.dart';
-import 'package:cbf/syllabus/syllabus.dart';
-import 'package:cbf/teacher/AssignMarksPage.dart';
-import 'package:cbf/teacher/AssignSkillsPage.dart';
-import 'package:cbf/teacher/ResultcardPage.dart';
-import 'package:cbf/Attendance_UI/mark_attendance_page.dart';
-import 'package:cbf/teacher/complaint_teacher/teacher_complaint_list_page.dart';
-import 'package:cbf/Attendance_UI/teacher_attendance_screen.dart';
-import 'package:cbf/teacher/teacher_dashboard_screen.dart';
-import 'package:cbf/teacher/teacher_homework_page.dart';
-import 'package:cbf/teacher/teacher_profile_page.dart';
-import 'package:cbf/Attendance_UI/attendance_screen.dart';
-import 'package:cbf/teacher/teacher_timetable.dart';
+import 'package:demo_app/alert/stu_alert.dart';
+import 'package:demo_app/connect_teacher/teacher_chat_list.dart';
+import 'package:demo_app/login_page.dart';
+import 'package:demo_app/payment/payment_teacher_screen.dart';
+import 'package:demo_app/school_info_page.dart';
+import 'package:demo_app/syllabus/syllabus.dart';
+import 'package:demo_app/teacher/AssignMarksPage.dart';
+import 'package:demo_app/teacher/AssignSkillsPage.dart';
+import 'package:demo_app/teacher/ResultcardPage.dart';
+import 'package:demo_app/Attendance_UI/mark_attendance_page.dart';
+import 'package:demo_app/teacher/complaint_teacher/teacher_complaint_list_page.dart';
+import 'package:demo_app/Attendance_UI/teacher_attendance_screen.dart';
+import 'package:demo_app/teacher/teacher_dashboard_screen.dart';
+import 'package:demo_app/teacher/teacher_homework_page.dart';
+import 'package:demo_app/teacher/teacher_profile_page.dart';
+import 'package:demo_app/Attendance_UI/attendance_screen.dart';
+import 'package:demo_app/teacher/teacher_timetable.dart';
 
 class TeacherSidebarMenu extends StatefulWidget {
   const TeacherSidebarMenu({super.key});
@@ -40,7 +40,6 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
   void initState() {
     super.initState();
     loadTeacherInfo();
-   
   }
 
   Future<void> loadTeacherInfo() async {
