@@ -28,6 +28,9 @@ class _TeacherAddHomeworkPageState extends State<TeacherAddHomeworkPage> {
 
   bool isLoading = false;
   bool _isSubmitting = false;
+  bool isPdf(String path) {
+    return path.toLowerCase().endsWith('.pdf');
+  }
 
   @override
   void initState() {
@@ -129,6 +132,14 @@ class _TeacherAddHomeworkPageState extends State<TeacherAddHomeworkPage> {
         submissionDate == null ||
         _titleController.text.trim().isEmpty ||
         _descriptionController.text.trim().isEmpty) {
+      if (submissionDate!.isBefore(assignDate!)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Submission date cannot be before assign date'),
+          ),
+        );
+        return;
+      }
       debugPrint("❌ VALIDATION FAILED");
 
       ScaffoldMessenger.of(
@@ -267,15 +278,19 @@ class _TeacherAddHomeworkPageState extends State<TeacherAddHomeworkPage> {
   }
 
   Future<void> pickAttachment() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-    );
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+      );
 
-    if (result != null && result.files.single.path != null) {
-      setState(() {
-        selectedFile = File(result.files.single.path!);
-      });
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          selectedFile = File(result.files.single.path!);
+        });
+      }
+    } catch (e) {
+      debugPrint("File Picker Error: $e");
     }
   }
 
@@ -524,14 +539,41 @@ class _TeacherAddHomeworkPageState extends State<TeacherAddHomeworkPage> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: selectedFile != null
-                                            ? Image.file(
-                                                selectedFile!,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Image.network(
-                                                existingAttachment!,
-                                                fit: BoxFit.cover,
-                                              ),
+                                            ? isPdf(selectedFile!.path)
+                                                  ? const Center(
+                                                      child: Icon(
+                                                        Icons.picture_as_pdf,
+                                                        size: 50,
+                                                        color: Colors.red,
+                                                      ),
+                                                    )
+                                                  : Image.file(
+                                                      selectedFile!,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                            : existingAttachment != null
+                                            ? existingAttachment!
+                                                      .toLowerCase()
+                                                      .endsWith('.pdf')
+                                                  ? const Center(
+                                                      child: Icon(
+                                                        Icons.picture_as_pdf,
+                                                        size: 50,
+                                                        color: Colors.red,
+                                                      ),
+                                                    )
+                                                  : Image.network(
+                                                      existingAttachment!,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder:
+                                                          (_, __, ___) {
+                                                            return const Icon(
+                                                              Icons
+                                                                  .broken_image,
+                                                            );
+                                                          },
+                                                    )
+                                            : const SizedBox(),
                                       ),
                                     ),
 
@@ -585,5 +627,12 @@ class _TeacherAddHomeworkPageState extends State<TeacherAddHomeworkPage> {
               ),
             ),
     );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 }

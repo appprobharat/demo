@@ -68,6 +68,12 @@
 
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app uses your location to verify attendance and location-based services.</string>
+	<!-- Photo Library Permission -->
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Select photos for homework attachments.</string>
+
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Save and manage homework attachments.</string>
 
 </dict>
 </plist>
